@@ -11,8 +11,16 @@ var UIBuilder = /** @class */ (function () {
         if (!!createdElementText) {
             createdElement.appendChild(createdElementText);
         }
+        if (!!element.children) {
+            this.buildChildrenElements(createdElement, element.children);
+        }
         this.setProperties(createdElement, element.properties);
         return createdElement;
+    };
+    UIBuilder.prototype.buildChildrenElements = function (targetElement, elements) {
+        elements.forEach(function (element) {
+            targetElement.appendChild(element.element);
+        });
     };
     UIBuilder.prototype.setProperties = function (targetElement, properties) {
         if (properties !== undefined) {
@@ -23,23 +31,30 @@ var UIBuilder = /** @class */ (function () {
     };
     return UIBuilder;
 }());
-var paragraph = new UIBuilder({
-    tagElement: "h1",
-    text: "Título",
+var button = new UIBuilder({
+    tagElement: "button",
+    text: "Botão",
     properties: [
         {
+            name: "onclick",
+            value: "alert('alertando')"
+        },
+        {
             name: "style",
-            value: "font-family: Arial, sans-serif; font-size: 3rem;"
+            value: "\n        font-family: Arial, sans-serif;\n        font-size: 1.5rem;\n        border-radius: 8px;\n        padding: 1rem 1.5rem;\n      "
         }
+    ]
+});
+var section = new UIBuilder({
+    tagElement: "section",
+    children: [
+        button
     ]
 });
 var main = new UIBuilder({
-    tagElement: "section",
-    properties: [
-        {
-            name: "style",
-            value: "padding: 1rem;background: red;"
-        }
+    tagElement: "main",
+    children: [
+        section
     ]
 });
-document.body.appendChild(paragraph.element);
+document.body.appendChild(main.element);

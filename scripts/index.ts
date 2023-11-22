@@ -4,22 +4,23 @@ interface ElementProperties {
   value: string;
 }
 
-interface UIBuilderProperties {
+interface UIElement {
   tagElement: string;
   text?: string;
   properties?: ElementProperties[];
+  children?: UIBuilder[]
 }
 
 class UIBuilder {
-  public UIProperties: UIBuilderProperties = {} as UIBuilderProperties;
+  public UIProperties: UIElement = {} as UIElement;
   public element: HTMLElement = {} as HTMLElement;
 
-  constructor(element: UIBuilderProperties) {
+  constructor(element: UIElement) {
     this.UIProperties = element;
     this.element = this.buildElement(element);
   }
 
-  buildElement(element: UIBuilderProperties) {
+  buildElement(element: UIElement) {
     const createdElement = document.createElement(element.tagElement);
     const createdElementText = element.text && document.createTextNode(element.text);
 
@@ -27,9 +28,19 @@ class UIBuilder {
       createdElement.appendChild(createdElementText);
     }
 
+    if (!!element.children) {
+      this.buildChildrenElements(createdElement, element.children);
+    }
+
     this.setProperties(createdElement, element.properties!);
 
     return createdElement;
+  }
+
+  buildChildrenElements(targetElement: HTMLElement, elements: UIBuilder[]) {
+    elements.forEach(element => {
+      targetElement.appendChild(element.element);
+    })
   }
 
   setProperties(targetElement: HTMLElement, properties: ElementProperties[]) {
@@ -41,25 +52,38 @@ class UIBuilder {
   }
 }
 
-const paragraph = new UIBuilder({
-  tagElement: "h1",
-  text: "Título",
+const button = new UIBuilder({
+  tagElement: "button",
+  text: "Botão",
   properties: [
     {
+      name: "onclick",
+      value: "alert('alertando')"
+    },
+    {
       name: "style",
-      value: "font-family: Arial, sans-serif; font-size: 3rem;"
+      value: `
+        font-family: Arial, sans-serif;
+        font-size: 1.5rem;
+        border-radius: 8px;
+        padding: 1rem 1.5rem;
+      `
     }
+  ]
+});
+
+const section = new UIBuilder({
+  tagElement: "section",
+  children: [
+    button
   ]
 });
 
 const main = new UIBuilder({
-  tagElement: "section",
-  properties: [
-    {
-      name: "style",
-      value: "padding: 1rem;background: red;"
-    }
+  tagElement: "main",
+  children: [
+    section
   ]
 });
 
-document.body.appendChild(paragraph.element);
+document.body.appendChild(main.element);
