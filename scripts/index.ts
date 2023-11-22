@@ -6,6 +6,7 @@ interface ElementProperties {
 
 interface UIBuilderProperties {
   tagElement: string;
+  text?: string;
   properties?: ElementProperties[];
 }
 
@@ -20,6 +21,12 @@ class UIBuilder {
 
   buildElement(element: UIBuilderProperties) {
     const createdElement = document.createElement(element.tagElement);
+    const createdElementText = element.text && document.createTextNode(element.text);
+
+    if (!!createdElementText) {
+      createdElement.appendChild(createdElementText);
+    }
+
     this.setProperties(createdElement, element.properties!);
 
     return createdElement;
@@ -34,6 +41,17 @@ class UIBuilder {
   }
 }
 
+const paragraph = new UIBuilder({
+  tagElement: "h1",
+  text: "Título",
+  properties: [
+    {
+      name: "style",
+      value: "font-family: Arial, sans-serif; font-size: 3rem;"
+    }
+  ]
+});
+
 const main = new UIBuilder({
   tagElement: "section",
   properties: [
@@ -44,4 +62,4 @@ const main = new UIBuilder({
   ]
 });
 
-document.body.appendChild(main.element);
+document.body.appendChild(paragraph.element);
