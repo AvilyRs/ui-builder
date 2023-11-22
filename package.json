@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "npx tsc scripts/*.ts --outfile scripts/build/index.js --watch",
+    "dev": "esbuild src/index.ts --bundle --outdir=src/build --watch",
+    "build": "esbuild src/index.ts --bundle --minify --sourcemap --outdir=src/build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "esbuild": "^0.19.7",
     "tsx": "^4.2.0",
     "typescript": "^5.3.2"
   }
