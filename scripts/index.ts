@@ -8,7 +8,7 @@ interface UIElement {
   tagElement: string;
   text?: string;
   properties?: ElementProperties[];
-  children?: UIBuilder[]
+  children?: UIBuilder[];
 }
 
 class UIBuilder {
@@ -39,7 +39,8 @@ class UIBuilder {
 
   buildChildrenElements(targetElement: HTMLElement, elements: UIBuilder[]) {
     elements.forEach(element => {
-      targetElement.appendChild(element.element);
+      const createdElement = this.buildElement(element.UIProperties);
+      targetElement.appendChild(createdElement);
     })
   }
 

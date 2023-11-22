@@ -18,8 +18,10 @@ var UIBuilder = /** @class */ (function () {
         return createdElement;
     };
     UIBuilder.prototype.buildChildrenElements = function (targetElement, elements) {
+        var _this = this;
         elements.forEach(function (element) {
-            targetElement.appendChild(element.element);
+            var createdElement = _this.buildElement(element.UIProperties);
+            targetElement.appendChild(createdElement);
         });
     };
     UIBuilder.prototype.setProperties = function (targetElement, properties) {
